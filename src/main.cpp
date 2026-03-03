@@ -73,6 +73,47 @@ int lru(int capacity, int num_requests, vector<int> &requests) {
     return misses;
 }
 
+int optff(int capacity, int num_requests, vector<int> &requests) {
+    int misses = 0;
+
+    vector<int> values;
+
+    for (int i = 0; i < num_requests; i++) {
+        int request = requests[i];
+        auto iter = find(values.begin(), values.end(), request);
+
+        if (iter == values.end()) {
+            // not in cache
+            if (values.size() < capacity) {
+                // cache not full
+                values.push_back(request);
+            } else {
+                // cache full, kick something out
+                int farthest_seen = -1;
+                int farthest_index = 0;
+                for (int j = 0; j < capacity; j++) {
+                    auto iter2 = find(requests.begin() + i + 1, requests.end(), values[j]);
+                    if (iter2 == requests.end()) {
+                        // this page is never seen again, kick it out
+                        farthest_index = j;
+                        break;
+                    } else {
+                        int next_seen = iter2 - requests.begin();
+                        if (next_seen > farthest_seen) {
+                            farthest_seen = next_seen;
+                            farthest_index = j;
+                        }
+                    }
+                }
+                values[farthest_index] = request;
+            }
+            misses++;
+        }
+    }
+
+    return misses;
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         cerr << "Usage: ./test <input_file>" << endl;
@@ -89,8 +130,9 @@ int main(int argc, char *argv[]) {
         infile >> requests[i];
     }
 
-    cout << "FIFO: " << fifo(k, m, requests) << endl;
-    cout << "LRU: " << lru(k, m, requests) << "\n";
+    cout << "FIFO   : " << fifo(k, m, requests) << endl;
+    cout << "LRU    : " << lru(k, m, requests) << "\n";
+    cout << "OPT    : " << optff(k, m, requests) << "\n";
 
     return 0;
 }
