@@ -7,8 +7,8 @@ Name: May Macler
 UFID: 26170596  
 
 ## Files
-main.cpp: The source code for algorithms
-example.txt: An example input file for the program created by main.cpp
+`src/main.cpp`: The source code for algorithms  
+`tests/`: Sample inputs for the program created by main.cpp
 
 ## Compiling
 To compile the matcher, use a C++ compiler (like g++):  
@@ -44,3 +44,16 @@ Up to 20 unique requests:
 
 Across all cases, OPTFF had significantly fewer misses than did FIFO and LRU. Although LRU seemed to perform a little better than FIFO, the difference between the two was small, and FIFO still outperformed LRU in some cases.
 
+### 2. Bad Sequence for LRU or FIFO
+A simple example for which OPTFF will produce strictly fewer misses than FIFO is as follows:
+```
+3 8
+1 2 3 4 1 2 3 4
+```
+(Found in `tests/question_2.txt`)
+
+FIFO : 8 misses  
+OPTFF: 5 misses
+
+Since FIFO can't see the future, it will continually evict elements from the cache right before they are needed, meaning that for this input of size 8, it will produce 8 misses. OPTFF, however, will know upon reaching the first request for `4` that there will be a lull in requests for `3`, and evict it instead of `1`.  
+In this particular example, LRU will also behave the exact same way (and thus produce the exact same number of misses) as FIFO, since the least recently used element will correspond with the first element in for FIFO.
