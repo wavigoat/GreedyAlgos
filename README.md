@@ -19,6 +19,10 @@ To test with input, run:
 ```
 ./test ./tests/example.txt
 ```
+The algorithm should produce an output like `outputs/example_outputs.txt`
+
+## Assumptions
+We are assuming that inputs are separated by a space, starting with the first number being capacity and the second number being the number of requests. Requests should be on a separate line, separated by a space as well.
 
 ## Questions
 ### 1. Empirical Comparison
@@ -80,7 +84,7 @@ Let ( A ) be any offline algorithm that knows the full request sequence.
         At this point, A has 1 more miss than OPTFF.
         A must now evict something for y.
         If A evicts x, the caches are now identical again, and OPTFF has one less miss.
-        
+
     Case C: Page x is requested first
         OPTFF picked x because it is the farthest in the future.
         If x is requested before y, then y was actually farther in the future than x.
